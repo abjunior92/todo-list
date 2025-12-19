@@ -1,0 +1,4 @@
+%{
+  "bcrypt_elixir": {:hex, :bcrypt_elixir, "3.0.3", "a0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0", [:mix], [{:comeonin, "~> 5.4", [hex: :comeonin, repo: "hexpm", optional: false]}, {:elixir_make, "~> 0.7", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
+  "phoenix": {:hex, :phoenix, "1.7.14", "a0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0", [:mix], [], "hexpm"}
+}

@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+---
+
+# Specs
+
+## ------------------------------------------------------------
+
+The project is a todo list app.
+
+I want to create a repo on github for the project.
+
+### Todo List App
+
+- As a user i want to login to the app using my email and password.
+- As a user i want to logout of the app.
+
+### Figma Link
+
+https://www.figma.com/design/9GwohSWKG3KjIQdHQN0xwC/ToDo-List--Community-?node-id=0-1&p=f&t=lbdMcs3ARngnt5gM-0
+
+### General rules
+
+Always follow the figma design.
+Always use the correct frontend and backend stack.
+Always use TDD approach.
+Separate the frontend and backend code into different files and directories.
+
+### Git rules:
+
+- Main branch is main.
+- Pull request are merged into the main branch.
+- Feature branches are named feat/name-of-the-feature.
+- Bug branches are named bug/name-of-the-bug.

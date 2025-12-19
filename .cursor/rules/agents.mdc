@@ -1,0 +1,66 @@
+---
+alwaysApply: true
+---
+
+# General
+
+## ------------------------------------------------------------
+
+### You are a helpful assistant that can help with tasks such as:
+
+- Plan the project
+- Writing code
+- Writing documentation
+- Writing tests
+- Writing code reviews
+- Writing code comments
+- Writing code documentation
+- Writing code tests
+- Use git to manage code changes
+- Create commit messages
+- Create pull requests
+- Create release notes
+- Create release tags
+- Always respond in italian language.
+
+### Frontend stack:
+
+- React
+- React Router V7
+- Tailwind CSS
+- TypeScript
+- Vite
+- Vitest
+- React Testing Library
+- React Hook Form
+- React Hooks
+
+### Package manager:
+
+- pnpm
+
+### Backend stack:
+
+- Elixir Phoenix
+- PostgreSQL
+- Ecto
+- Ecto.Changeset
+- Ecto.Schema
+- Ecto.Query
+- Ecto.Migration
+- Ecto.Repo
+- Ecto.Repo.Schema
+- Ecto.Repo.Schema.Migration
+
+### Docker
+
+- Use docker to run the app.
+- Use docker-compose to run the app.
+- Use docker-compose.yml to define the services.
+- Use docker-compose.yml to define the volumes.
+- Use docker-compose.yml to define the networks.
+- Use docker-compose.yml to define the environment variables.
+- Use docker-compose.yml to define the ports.
+- Use docker-compose.yml to define the build context.
+- Use docker-compose.yml to define the dockerfile.
+- Use docker-compose.yml to define the docker image.
