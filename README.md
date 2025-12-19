@@ -40,13 +40,30 @@ cd todo-list
 
 2. Avvia i servizi
 ```bash
-docker-compose up --build
+docker compose up --build
+```
+
+Oppure in background:
+```bash
+docker compose up -d --build
+```
+
+Per fermare i servizi:
+```bash
+docker compose down
+```
+
+Per vedere i log:
+```bash
+docker compose logs -f
 ```
 
 I servizi saranno disponibili su:
-- Frontend: http://localhost:3000
+- Frontend: http://localhost:3001
 - Backend API: http://localhost:4000
 - Database PostgreSQL: localhost:5432
+
+**Nota:** La porta del frontend è 3001 invece di 3000 per evitare conflitti con altri servizi.
 
 ### Sviluppo Locale
 
