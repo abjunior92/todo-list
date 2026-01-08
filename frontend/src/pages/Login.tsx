@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { Button } from "../components/common/Button";
+import { Input } from "../components/common/Input";
+import { Eye } from "../components/icons/Eye";
+import { EyeOff } from "../components/icons/EyeOff";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -56,86 +60,41 @@ export default function Login() {
 
           <form className="space-y-6">
             {/* Email Input */}
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                defaultValue="mail.exemple@mail.com"
-                className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 text-sm"
-                placeholder="Email"
-              />
-            </div>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              label="Email"
+              required
+              defaultValue="mail.exemple@mail.com"
+              placeholder="Email"
+            />
 
             {/* Password Input */}
-            <div className="relative">
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                required
-                defaultValue="**************"
-                className="w-full px-4 py-3 pr-12 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-0 text-sm"
-                placeholder="Password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-900 focus:outline-none"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.29 3.29m13.42 13.42l-3.29-3.29M3 3l13.42 13.42"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
-                  </svg>
-                )}
-              </button>
-            </div>
+            <Input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              label="Password"
+              required
+              defaultValue="**************"
+              placeholder="Password"
+              rightElement={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-gray-600 hover:text-gray-900 focus:outline-none"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
+              }
+            />
 
             {/* Sign In Button */}
-            <button
-              type="submit"
-              className="w-full py-3 px-4 bg-green-400 hover:bg-green-500 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
-            >
+            <Button type="submit" variant="primary">
               Sign In
-            </button>
+            </Button>
           </form>
 
           {/* Sign Up Link */}

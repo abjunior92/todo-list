@@ -26,6 +26,16 @@ Always use the correct frontend and backend stack.
 Always use TDD approach.
 Separate the frontend and backend code into different files and directories.
 
+### Frontend rules:
+
+- Always use the correct frontend stack.
+- Always separate logic into components and pages.
+- Define the common components inside a "components" folder with inside a "common" folder.
+- For component variants (like button variants, input variants, etc.), use the class-variance-authority (cva) approach, similar to shadcn.
+- If you simply want to create reusable classes to avoid repeating the same Tailwind classes, define them inside the index.css file using @apply.
+- In tailwind.config.js, only define custom colors if needed.
+- Do not insert svg icons inside pages but define an exported icon component inside the "components" folder with inside a "icons" folder.
+
 ### Git rules:
 
 - Main branch is main.

@@ -13,17 +13,17 @@ setup:
 	cd backend && mix deps.get
 
 dev:
-	docker-compose up --build
+	docker compose up --build
 
 build:
-	docker-compose build
+	docker compose build
 
 test:
 	cd frontend && pnpm test
 	cd backend && mix test
 
 clean:
-	docker-compose down -v
+	docker compose down -v
 	cd frontend && rm -rf node_modules dist
 	cd backend && rm -rf _build deps
 
