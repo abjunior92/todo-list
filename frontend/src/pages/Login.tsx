@@ -3,6 +3,7 @@ import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { Eye } from "../components/icons/Eye";
 import { EyeOff } from "../components/icons/EyeOff";
+import { Link } from "../components/common/Link";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -101,9 +102,9 @@ export default function Login() {
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <a href="#" className="text-black font-medium hover:underline">
+              <Link href="#" variant="secondary">
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
         </div>
