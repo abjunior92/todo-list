@@ -51,7 +51,7 @@ defmodule TodoListWeb.Endpoint do
       "http://localhost:3001",
       "http://frontend:3000"
     ],
-    credentials: false,
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
     headers: ["Content-Type", "Authorization", "Accept"]
 

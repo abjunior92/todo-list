@@ -17,6 +17,21 @@ export interface SignupResponse {
   };
 }
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  user: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+}
+
 export interface ApiError {
   message: string;
   errors?: Record<string, string[]>;
@@ -43,7 +58,33 @@ export async function signup(data: SignupRequest): Promise<SignupResponse> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+    credentials: "include", // Includi i cookie per le sessioni
   });
 
   return handleResponse<SignupResponse>(response);
+}
+
+export async function login(data: LoginRequest): Promise<LoginResponse> {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+    credentials: "include", // Includi i cookie per le sessioni
+  });
+
+  return handleResponse<LoginResponse>(response);
+}
+
+export async function logout(): Promise<{ message: string }> {
+  const response = await fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", // Includi i cookie per le sessioni
+  });
+
+  return handleResponse<{ message: string }>(response);
 }

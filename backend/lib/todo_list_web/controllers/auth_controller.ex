@@ -37,14 +37,41 @@ defmodule TodoListWeb.AuthController do
     end
   end
 
-  def login(conn, _params) do
-    # TODO: Implementare login
-    json(conn, %{message: "Login endpoint"})
+  def login(conn, params) do
+    email = params["email"]
+    password = params["password"]
+
+    case authenticate_user(email, password) do
+      {:ok, user} ->
+        conn
+        |> fetch_session()
+        |> put_session(:user_id, user.id)
+        |> put_status(:ok)
+        |> json(%{
+          message: "Login successful",
+          user: %{
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email
+          }
+        })
+
+      {:error, :invalid_credentials} ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{
+          message: "Invalid email or password"
+        })
+    end
   end
 
   def logout(conn, _params) do
-    # TODO: Implementare logout
-    json(conn, %{message: "Logout endpoint"})
+    conn
+    |> fetch_session()
+    |> clear_session()
+    |> put_status(:ok)
+    |> json(%{message: "Logout successful"})
   end
 
   defp create_user(params) do
@@ -52,6 +79,24 @@ defmodule TodoListWeb.AuthController do
     |> User.changeset(params)
     |> Repo.insert()
   end
+
+  defp authenticate_user(email, password) when is_binary(email) and is_binary(password) do
+    case Repo.get_by(User, email: email) do
+      nil ->
+        # Simula il tempo di verifica per prevenire timing attacks
+        Bcrypt.no_user_verify()
+        {:error, :invalid_credentials}
+
+      user ->
+        if Bcrypt.verify_pass(password, user.password_hash) do
+          {:ok, user}
+        else
+          {:error, :invalid_credentials}
+        end
+    end
+  end
+
+  defp authenticate_user(_, _), do: {:error, :invalid_credentials}
 
   defp translate_errors(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->

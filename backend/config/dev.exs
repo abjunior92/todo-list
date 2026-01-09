@@ -18,7 +18,7 @@ config :todo_list, TodoListWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "dev-secret-key-base-change-in-production",
+  secret_key_base: "09H-QVIz--uJUKCmpNu4GSdrleT5jLhiEvS_ajDu-IRQqHM0NkuCGu7qvlV7FZiW",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}

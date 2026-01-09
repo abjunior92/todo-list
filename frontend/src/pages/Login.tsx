@@ -1,13 +1,23 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { Eye } from "../components/icons/Eye";
 import { EyeOff } from "../components/icons/EyeOff";
 import { Link } from "../components/common/Link";
 import { AuthDecorativeSection } from "../components/common/AuthDecorativeSection";
+import { login, ApiError } from "../lib/api";
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gray-800 flex items-center justify-center p-4">
@@ -19,7 +29,40 @@ export default function Login() {
         <div className="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
           <h1 className="text-3xl font-bold text-black mb-8">Sign in</h1>
 
-          <form className="space-y-6">
+          <form
+            className="space-y-6"
+            onSubmit={async e => {
+              e.preventDefault();
+              setError(null);
+              setIsLoading(true);
+
+              const formData = new FormData(e.currentTarget);
+              const data: LoginFormData = {
+                email: formData.get("email") as string,
+                password: formData.get("password") as string,
+              };
+
+              try {
+                await login(data);
+                navigate("/");
+              } catch (err) {
+                const apiError = err as ApiError;
+                setError(
+                  apiError.message ||
+                    "Si è verificato un errore durante il login"
+                );
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+          >
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                {error}
+              </div>
+            )}
+
             {/* Email Input */}
             <Input
               id="email"
@@ -27,8 +70,8 @@ export default function Login() {
               type="email"
               label="Email"
               required
-              defaultValue="mail.exemple@mail.com"
               placeholder="Email"
+              disabled={isLoading}
             />
 
             {/* Password Input */}
@@ -38,14 +81,15 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
               label="Password"
               required
-              defaultValue="**************"
               placeholder="Password"
+              disabled={isLoading}
               rightElement={
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="text-gray-600 hover:text-gray-900 focus:outline-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
+                  disabled={isLoading}
                 >
                   {showPassword ? <EyeOff /> : <Eye />}
                 </button>
@@ -53,8 +97,8 @@ export default function Login() {
             />
 
             {/* Sign In Button */}
-            <Button type="submit" variant="primary">
-              Sign In
+            <Button type="submit" variant="primary" disabled={isLoading}>
+              {isLoading ? "Accesso in corso..." : "Sign In"}
             </Button>
           </form>
 
