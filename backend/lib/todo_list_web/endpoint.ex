@@ -21,7 +21,7 @@ defmodule TodoListWeb.Endpoint do
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
-  if code_reload? do
+  if Application.compile_env(:todo_list, :dev_routes, false) do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
@@ -43,5 +43,17 @@ defmodule TodoListWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+
+  # CORS plug must be before the router to handle OPTIONS preflight requests
+  plug CORSPlug,
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://frontend:3000"
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+    headers: ["Content-Type", "Authorization", "Accept"]
+
   plug TodoListWeb.Router
 end

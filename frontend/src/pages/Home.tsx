@@ -1,11 +1,32 @@
+import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Errore durante il logout:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">Todo List</h1>
-          <button className="text-sm text-gray-700 hover:text-gray-900">
-            Logout
+          <button
+            onClick={handleLogout}
+            disabled={isLoading}
+            className="text-sm text-gray-700 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Logout in corso..." : "Logout"}
           </button>
         </div>
       </header>
@@ -15,6 +36,5 @@ export default function Home() {
         </div>
       </main>
     </div>
-  )
+  );
 }
-

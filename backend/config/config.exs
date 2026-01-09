@@ -1,5 +1,8 @@
 import Config
 
+# Configure Ecto repos
+config :todo_list, ecto_repos: [TodoList.Repo]
+
 # config/runtime.exs is executed for all environments, including
 # during compilation. See config/runtime.exs for more information.
 

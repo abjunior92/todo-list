@@ -3,14 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-  "w-full py-3 px-4 font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+  "w-full py-3 px-4 font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
         primary:
-          "bg-green-400 hover:bg-green-500 text-white focus:ring-green-400",
+          "bg-green-400 hover:bg-green-500 text-white focus:ring-green-400 disabled:hover:bg-green-400",
         secondary:
-          "bg-gray-200 hover:bg-gray-300 text-black focus:ring-gray-400",
+          "bg-gray-200 hover:bg-gray-300 text-black focus:ring-gray-400 disabled:hover:bg-gray-200",
       },
     },
     defaultVariants: {
