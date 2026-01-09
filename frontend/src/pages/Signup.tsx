@@ -6,8 +6,9 @@ import { EyeOff } from "../components/icons/EyeOff";
 import { Link } from "../components/common/Link";
 import { AuthDecorativeSection } from "../components/common/AuthDecorativeSection";
 
-export default function Login() {
+export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-800 flex items-center justify-center p-4">
@@ -15,20 +16,39 @@ export default function Login() {
         {/* Left Section - Decorative Background */}
         <AuthDecorativeSection />
 
-        {/* Right Section - Login Form */}
+        {/* Right Section - Sign Up Form */}
         <div className="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-          <h1 className="text-3xl font-bold text-black mb-8">Sign in</h1>
+          <h1 className="text-3xl font-bold text-black mb-8">Sign up</h1>
 
           <form className="space-y-6">
+            {/* First Name Input */}
+            <Input
+              id="firstName"
+              name="firstName"
+              type="text"
+              label="First Name"
+              required
+              placeholder="First Name"
+            />
+
+            {/* Last Name Input */}
+            <Input
+              id="lastName"
+              name="lastName"
+              type="text"
+              label="Last Name"
+              required
+              placeholder="Last Name"
+            />
+
             {/* Email Input */}
             <Input
               id="email"
               name="email"
               type="email"
-              label="Email"
+              label="E-mail address"
               required
-              defaultValue="mail.exemple@mail.com"
-              placeholder="Email"
+              placeholder="E-mail address"
             />
 
             {/* Password Input */}
@@ -38,7 +58,6 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
               label="Password"
               required
-              defaultValue="**************"
               placeholder="Password"
               rightElement={
                 <button
@@ -52,18 +71,40 @@ export default function Login() {
               }
             />
 
-            {/* Sign In Button */}
+            {/* Re-enter Password Input */}
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              label="Re-enter the password"
+              required
+              placeholder="Re-enter the password"
+              rightElement={
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="text-gray-600 hover:text-gray-900 focus:outline-none"
+                  aria-label={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
+                >
+                  {showConfirmPassword ? <EyeOff /> : <Eye />}
+                </button>
+              }
+            />
+
+            {/* Sign Up Button */}
             <Button type="submit" variant="primary">
-              Sign In
+              Sign Up
             </Button>
           </form>
 
-          {/* Sign Up Link */}
+          {/* Sign In Link */}
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
-              <Link href="/signup" variant="secondary">
-                Sign up
+              Already have an account?{" "}
+              <Link href="/login" variant="secondary">
+                Sign In
               </Link>
             </p>
           </div>
