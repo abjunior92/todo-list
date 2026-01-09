@@ -11,6 +11,7 @@ defmodule TodoListWeb.Router do
   scope "/api", TodoListWeb do
     pipe_through :api
 
+    post "/auth/signup", AuthController, :signup
     post "/auth/login", AuthController, :login
     post "/auth/logout", AuthController, :logout
   end
