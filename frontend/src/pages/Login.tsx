@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { Eye } from "../components/icons/Eye";
 import { EyeOff } from "../components/icons/EyeOff";
 import { Link } from "../components/common/Link";
 import { AuthDecorativeSection } from "../components/common/AuthDecorativeSection";
-import { login, ApiError } from "../lib/api";
+import { useAuth } from "../contexts/AuthContext";
+import { ApiError } from "../lib/api";
 
 interface LoginFormData {
   email: string;
@@ -17,7 +17,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const { login } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-800 flex items-center justify-center p-4">
@@ -44,14 +44,12 @@ export default function Login() {
 
               try {
                 await login(data);
-                navigate("/");
               } catch (err) {
                 const apiError = err as ApiError;
                 setError(
                   apiError.message ||
                     "Si è verificato un errore durante il login"
                 );
-              } finally {
                 setIsLoading(false);
               }
             }}

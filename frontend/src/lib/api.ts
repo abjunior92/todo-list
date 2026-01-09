@@ -32,6 +32,17 @@ export interface LoginResponse {
   };
 }
 
+export interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+export interface MeResponse {
+  user: User;
+}
+
 export interface ApiError {
   message: string;
   errors?: Record<string, string[]>;
@@ -75,6 +86,18 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
   });
 
   return handleResponse<LoginResponse>(response);
+}
+
+export async function getCurrentUser(): Promise<MeResponse> {
+  const response = await fetch(`${API_URL}/auth/me`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", // Includi i cookie per le sessioni
+  });
+
+  return handleResponse<MeResponse>(response);
 }
 
 export async function logout(): Promise<{ message: string }> {

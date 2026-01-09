@@ -1,21 +1,16 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
-import { logout, ApiError } from "../lib/api";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
     setIsLoading(true);
     try {
       await logout();
-      navigate("/login");
     } catch (err) {
-      const apiError = err as ApiError;
-      console.error("Errore durante il logout:", apiError.message);
-      // Anche in caso di errore, reindirizziamo al login
-      navigate("/login");
+      console.error("Errore durante il logout:", err);
     } finally {
       setIsLoading(false);
     }

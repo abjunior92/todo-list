@@ -66,6 +66,38 @@ defmodule TodoListWeb.AuthController do
     end
   end
 
+  def me(conn, _params) do
+    conn = fetch_session(conn)
+    user_id = get_session(conn, :user_id)
+
+    case user_id do
+      nil ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{message: "Not authenticated"})
+
+      id ->
+        case Repo.get(User, id) do
+          nil ->
+            conn
+            |> put_status(:unauthorized)
+            |> json(%{message: "User not found"})
+
+          user ->
+            conn
+            |> put_status(:ok)
+            |> json(%{
+              user: %{
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email
+              }
+            })
+        end
+    end
+  end
+
   def logout(conn, _params) do
     conn
     |> fetch_session()
