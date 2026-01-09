@@ -3,9 +3,6 @@ defmodule TodoListWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug CORSPlug,
-      origin: ["http://localhost:3000", "http://frontend:3000"],
-      credentials: true
   end
 
   scope "/api", TodoListWeb do

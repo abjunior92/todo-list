@@ -43,5 +43,17 @@ defmodule TodoListWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+
+  # CORS plug must be before the router to handle OPTIONS preflight requests
+  plug CORSPlug,
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://frontend:3000"
+    ],
+    credentials: false,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
+    headers: ["Content-Type", "Authorization", "Accept"]
+
   plug TodoListWeb.Router
 end
