@@ -7,8 +7,10 @@ export function Settings() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M10 12C11.1046 12 12 11.1046 12 10C12 8.89543 11.1046 8 10 8C8.89543 8 8 8.89543 8 10C8 11.1046 8.89543 12 10 12Z"
+      <circle
+        cx="9.5"
+        cy="12"
+        r="2"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
