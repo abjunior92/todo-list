@@ -1,5 +1,5 @@
 defmodule TodoListWeb.AuthControllerTest do
-  use TodoListWeb.ConnCase
+  use TodoListWeb.ConnCase, async: true
 
   alias TodoList.Accounts.User
   alias TodoList.Repo

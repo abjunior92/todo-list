@@ -7,7 +7,8 @@ config :todo_list, TodoList.Repo,
   hostname: "db",
   database: "todo_list_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: System.schedulers_online() * 2
+  pool_size: 10,
+  ownership_timeout: 30_000
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
@@ -24,3 +25,15 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Speed up test compilation
+config :phoenix, :json_library, Jason
+
+# Disable code reloading in tests
+config :todo_list, TodoListWeb.Endpoint,
+  code_reloader: false
+
+# Optimize ExUnit
+config :ex_unit,
+  capture_log: true,
+  timeout: 30_000
