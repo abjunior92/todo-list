@@ -9,6 +9,8 @@ defmodule TodoList.Accounts.User do
     field :password_hash, :string
     field :password, :string, virtual: true, redact: true
 
+    has_many :tasks, TodoList.Tasks.Task
+
     timestamps()
   end
 

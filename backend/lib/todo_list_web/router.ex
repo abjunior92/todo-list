@@ -12,5 +12,7 @@ defmodule TodoListWeb.Router do
     post "/auth/login", AuthController, :login
     post "/auth/logout", AuthController, :logout
     get "/auth/me", AuthController, :me
+
+    resources "/tasks", TaskController, except: [:new, :edit]
   end
 end

@@ -13,7 +13,7 @@ config :todo_list, TodoList.Repo,
 # you can enable the server option below.
 config :todo_list, TodoListWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "test-secret-key-base",
+  secret_key_base: "test-secret-key-base-that-is-at-least-64-characters-long-for-testing-purposes-only",
   server: false
 
 # In test we don't send emails.

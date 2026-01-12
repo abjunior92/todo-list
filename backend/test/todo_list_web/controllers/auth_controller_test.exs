@@ -108,16 +108,142 @@ defmodule TodoListWeb.AuthControllerTest do
   end
 
   describe "POST /api/auth/login" do
-    test "returns login endpoint message", %{conn: conn} do
+    test "returns unauthorized when credentials are missing", %{conn: conn} do
       conn = post(conn, "/api/auth/login", %{})
-      assert json_response(conn, 200) == %{"message" => "Login endpoint"}
+      assert json_response(conn, 401)["message"] == "Invalid email or password"
+    end
+
+    test "returns unauthorized when email is missing", %{conn: conn} do
+      conn = post(conn, "/api/auth/login", %{"password" => "password123"})
+      assert json_response(conn, 401)["message"] == "Invalid email or password"
+    end
+
+    test "returns unauthorized when password is missing", %{conn: conn} do
+      conn = post(conn, "/api/auth/login", %{"email" => "test@example.com"})
+      assert json_response(conn, 401)["message"] == "Invalid email or password"
+    end
+
+    test "returns unauthorized when user does not exist", %{conn: conn} do
+      conn = post(conn, "/api/auth/login", %{
+        "email" => "nonexistent@example.com",
+        "password" => "password123"
+      })
+      assert json_response(conn, 401)["message"] == "Invalid email or password"
+    end
+
+    test "returns unauthorized when password is incorrect", %{conn: conn} do
+      # Create a user first
+      %User{}
+      |> User.changeset(%{
+        first_name: "Mario",
+        last_name: "Rossi",
+        email: "mario.rossi@example.com",
+        password: "correctpassword"
+      })
+      |> Repo.insert!()
+
+      conn = post(conn, "/api/auth/login", %{
+        "email" => "mario.rossi@example.com",
+        "password" => "wrongpassword"
+      })
+      assert json_response(conn, 401)["message"] == "Invalid email or password"
+    end
+
+    test "returns user data when credentials are valid", %{conn: conn} do
+      # Create a user first
+      user = %User{}
+      |> User.changeset(%{
+        first_name: "Mario",
+        last_name: "Rossi",
+        email: "mario.rossi@example.com",
+        password: "password123"
+      })
+      |> Repo.insert!()
+
+      conn = post(conn, "/api/auth/login", %{
+        "email" => "mario.rossi@example.com",
+        "password" => "password123"
+      })
+
+      response = json_response(conn, 200)
+      assert response["message"] == "Login successful"
+      assert response["user"]["id"] == user.id
+      assert response["user"]["email"] == "mario.rossi@example.com"
+      assert response["user"]["first_name"] == "Mario"
+      assert response["user"]["last_name"] == "Rossi"
     end
   end
 
   describe "POST /api/auth/logout" do
-    test "returns logout endpoint message", %{conn: conn} do
+    test "returns logout successful message", %{conn: conn} do
       conn = post(conn, "/api/auth/logout", %{})
-      assert json_response(conn, 200) == %{"message" => "Logout endpoint"}
+      assert json_response(conn, 200)["message"] == "Logout successful"
+    end
+
+    test "clears session on logout", %{conn: conn} do
+      # Create a user and login first
+      user = %User{}
+      |> User.changeset(%{
+        first_name: "Mario",
+        last_name: "Rossi",
+        email: "mario.rossi@example.com",
+        password: "password123"
+      })
+      |> Repo.insert!()
+
+      # Login
+      conn = conn
+      |> Plug.Test.init_test_session(%{})
+      |> put_session(:user_id, user.id)
+
+      # Logout
+      conn = post(conn, "/api/auth/logout", %{})
+      assert json_response(conn, 200)["message"] == "Logout successful"
+
+      # Verify session is cleared by checking /api/auth/me
+      conn = get(conn, "/api/auth/me")
+      assert json_response(conn, 401)["message"] == "Not authenticated"
+    end
+  end
+
+  describe "GET /api/auth/me" do
+    test "returns unauthorized when not authenticated", %{conn: conn} do
+      conn = get(conn, "/api/auth/me")
+      assert json_response(conn, 401)["message"] == "Not authenticated"
+    end
+
+    test "returns user data when authenticated", %{conn: conn} do
+      # Create a user
+      user = %User{}
+      |> User.changeset(%{
+        first_name: "Mario",
+        last_name: "Rossi",
+        email: "mario.rossi@example.com",
+        password: "password123"
+      })
+      |> Repo.insert!()
+
+      # Authenticate
+      conn = conn
+      |> Plug.Test.init_test_session(%{})
+      |> put_session(:user_id, user.id)
+
+      conn = get(conn, "/api/auth/me")
+      response = json_response(conn, 200)
+      assert response["user"]["id"] == user.id
+      assert response["user"]["email"] == "mario.rossi@example.com"
+      assert response["user"]["first_name"] == "Mario"
+      assert response["user"]["last_name"] == "Rossi"
+    end
+
+    test "returns unauthorized when user does not exist", %{conn: conn} do
+      # Authenticate with non-existent user ID
+      conn = conn
+      |> Plug.Test.init_test_session(%{})
+      |> put_session(:user_id, 999999)
+
+      conn = get(conn, "/api/auth/me")
+      assert json_response(conn, 401)["message"] == "User not found"
     end
   end
 end
