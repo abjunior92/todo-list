@@ -3,15 +3,15 @@ import { TaskItem } from "./TaskItem";
 import { useState } from "react";
 
 interface Task {
-  id: string;
-  text: string;
+  id: number;
+  description: string;
   completed: boolean;
 }
 
 interface TaskSectionProps {
   title: string;
   tasks: Task[];
-  onTaskToggle?: (taskId: string) => void;
+  onTaskToggle?: (taskId: number) => void;
   onAddTask?: (text: string) => void;
   className?: string;
 }
@@ -36,7 +36,7 @@ export function TaskSection({
   return (
     <div className={`bg-white rounded-lg p-4 ${className}`}>
       <h3 className="text-lg font-bold text-black mb-4">{title}</h3>
-      
+
       <form onSubmit={handleSubmit} className="mb-4">
         <div className="flex items-center gap-2">
           <button
@@ -49,7 +49,7 @@ export function TaskSection({
           <input
             type="text"
             value={newTaskText}
-            onChange={(e) => setNewTaskText(e.target.value)}
+            onChange={e => setNewTaskText(e.target.value)}
             placeholder="Add new task"
             className="flex-1 text-sm border-none outline-none bg-transparent text-black placeholder-gray-400"
           />
@@ -57,11 +57,11 @@ export function TaskSection({
       </form>
 
       <div>
-        {tasks.map((task) => (
+        {tasks.map(task => (
           <TaskItem
             key={task.id}
             id={task.id}
-            text={task.text}
+            text={task.description}
             completed={task.completed}
             onToggle={onTaskToggle}
           />

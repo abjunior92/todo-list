@@ -1,60 +1,146 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar } from "../components/common/Sidebar";
 import { TaskSection } from "../components/common/TaskSection";
-
-interface Task {
-  id: string;
-  text: string;
-  completed: boolean;
-}
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  type Task,
+  type ApiError,
+} from "../lib/api";
 
 type Section = "upcoming" | "today" | "calendar";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>("upcoming");
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Task data - solo frontend, nessuna logica backend
-  const [todayTasks, setTodayTasks] = useState<Task[]>([
-    { id: "1", text: "Database create for company", completed: false },
-    { id: "2", text: "Website templates", completed: false },
-    { id: "3", text: "Meet work teem", completed: false },
-  ]);
+  // Carica tutti i task all'avvio
+  useEffect(() => {
+    loadTasks();
+  }, []);
 
-  const [tomorrowTasks, setTomorrowTasks] = useState<Task[]>([
-    { id: "4", text: "Work teem", completed: false },
-    { id: "5", text: "Job interview", completed: false },
-  ]);
-
-  const [thisWeekTasks, setThisWeekTasks] = useState<Task[]>([
-    { id: "6", text: "Research content ideas", completed: false },
-    { id: "7", text: "Consult accountant", completed: false },
-    { id: "8", text: "Print business card", completed: false },
-  ]);
-
-  const handleTaskToggle = (
-    taskId: string,
-    setTaskList: React.Dispatch<React.SetStateAction<Task[]>>
-  ) => {
-    setTaskList(prev =>
-      prev.map(task =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
+  const loadTasks = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await getTasks();
+      setAllTasks(response.tasks);
+    } catch (err) {
+      const error = err as ApiError;
+      setError(error.message || "Errore nel caricamento dei task");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAddTask = (
-    text: string,
-    setTaskList: React.Dispatch<React.SetStateAction<Task[]>>
-  ) => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      text,
-      completed: false,
+  // Funzioni helper per filtrare i task per data
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0]; // YYYY-MM-DD
+  };
+
+  const getTomorrowDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  };
+
+  const getThisWeekDates = () => {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay()); // Domenica
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Sabato
+    return {
+      start: startOfWeek.toISOString().split("T")[0],
+      end: endOfWeek.toISOString().split("T")[0],
     };
-    setTaskList(prev => [...prev, newTask]);
+  };
+
+  const filterTasksByDate = (tasks: Task[], date: string) => {
+    return tasks.filter(task => {
+      const taskDate = task.scheduledAt.split("T")[0];
+      return taskDate === date;
+    });
+  };
+
+  const filterTasksByWeek = (tasks: Task[]) => {
+    const { start, end } = getThisWeekDates();
+    return tasks.filter(task => {
+      const taskDate = task.scheduledAt.split("T")[0];
+      return taskDate >= start && taskDate <= end;
+    });
+  };
+
+  const todayTasks = filterTasksByDate(allTasks, getTodayDate());
+  const tomorrowTasks = filterTasksByDate(allTasks, getTomorrowDate());
+  const thisWeekTasks = filterTasksByWeek(allTasks);
+
+  const handleTaskToggle = async (taskId: number) => {
+    const task = allTasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    try {
+      const updatedTask = await updateTask(taskId, {
+        completed: !task.completed,
+      });
+      setAllTasks(prev =>
+        prev.map(t => (t.id === taskId ? updatedTask.task : t))
+      );
+    } catch (err) {
+      const error = err as ApiError;
+      setError(error.message || "Errore nell'aggiornamento del task");
+    }
+  };
+
+  const handleAddTask = async (
+    text: string,
+    scheduledDate: string // YYYY-MM-DD
+  ) => {
+    try {
+      // Crea un datetime per la data specificata (mezzanotte)
+      const scheduledAt = `${scheduledDate}T00:00:00`;
+      const newTask = await createTask({
+        description: text,
+        scheduledAt,
+        completed: false,
+      });
+      setAllTasks(prev => [...prev, newTask.task]);
+    } catch (err) {
+      const error = err as ApiError;
+      setError(error.message || "Errore nella creazione del task");
+    }
   };
 
   const renderMainContent = () => {
+    if (loading) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-600">Caricamento...</p>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-red-600">{error}</p>
+          <button
+            onClick={loadTasks}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Riprova
+          </button>
+        </div>
+      );
+    }
+
+    const totalUpcomingTasks =
+      todayTasks.length + tomorrowTasks.length + thisWeekTasks.length;
+
     if (activeSection === "upcoming") {
       return (
         <>
@@ -63,7 +149,7 @@ export default function Home() {
               Upcoming
             </h1>
             <span className="inline-block bg-gray-200 text-black text-xs font-medium px-2 py-1 rounded-full">
-              18
+              {totalUpcomingTasks}
             </span>
           </div>
 
@@ -73,8 +159,8 @@ export default function Home() {
               <TaskSection
                 title="Today"
                 tasks={todayTasks}
-                onTaskToggle={id => handleTaskToggle(id, setTodayTasks)}
-                onAddTask={text => handleAddTask(text, setTodayTasks)}
+                onTaskToggle={handleTaskToggle}
+                onAddTask={text => handleAddTask(text, getTodayDate())}
               />
             </div>
 
@@ -82,16 +168,16 @@ export default function Home() {
             <TaskSection
               title="Tomorrow"
               tasks={tomorrowTasks}
-              onTaskToggle={id => handleTaskToggle(id, setTomorrowTasks)}
-              onAddTask={text => handleAddTask(text, setTomorrowTasks)}
+              onTaskToggle={handleTaskToggle}
+              onAddTask={text => handleAddTask(text, getTomorrowDate())}
             />
 
             {/* This Week Section */}
             <TaskSection
               title="This Week"
               tasks={thisWeekTasks}
-              onTaskToggle={id => handleTaskToggle(id, setThisWeekTasks)}
-              onAddTask={text => handleAddTask(text, setThisWeekTasks)}
+              onTaskToggle={handleTaskToggle}
+              onAddTask={text => handleAddTask(text, getTodayDate())}
             />
           </div>
         </>
@@ -112,8 +198,8 @@ export default function Home() {
           <TaskSection
             title="Today"
             tasks={todayTasks}
-            onTaskToggle={id => handleTaskToggle(id, setTodayTasks)}
-            onAddTask={text => handleAddTask(text, setTodayTasks)}
+            onTaskToggle={handleTaskToggle}
+            onAddTask={text => handleAddTask(text, getTodayDate())}
           />
         </>
       );

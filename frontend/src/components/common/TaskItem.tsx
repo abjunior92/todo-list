@@ -1,10 +1,10 @@
 import { Checkbox } from "../icons/Checkbox";
 
 interface TaskItemProps {
-  id: string;
+  id: number;
   text: string;
   completed?: boolean;
-  onToggle?: (id: string) => void;
+  onToggle?: (id: number) => void;
 }
 
 export function TaskItem({
